@@ -9,5 +9,8 @@ public class UserSchoolDto {
     private UUID id;
     private UUID userId;
     private UUID schoolId;
-    private String role; // ex: ADMIN, TEACHER, STUDENT, PARENT
+    private String role;
+
+    private UserDto user;     // 👈 ajouté
+    private SchoolDto school;// ex: ADMIN, TEACHER, STUDENT, PARENT
 }

@@ -38,6 +38,22 @@ public class UserSchoolRepositoryImpl implements UserSchoolRepositoryInterface {
                 .collect(Collectors.toList());
     }
 
+    public List<UserSchool> findAdminsOrPromoteurs() {
+        return jpaRepository.findAllAdminsOrPromoteurs()
+                .stream()
+                .map(UserSchoolMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    public List<UserSchool> findByUserId(UUID userId) {
+        return jpaRepository.findByUserId(userId)
+                .stream()
+                .map(UserSchoolMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+
+
     @Override
     public void deleteById(UUID id) {
         jpaRepository.deleteById(id);

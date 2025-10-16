@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
@@ -31,14 +32,14 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserDto>> getUserById(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<UserDto>> getUserById(@PathVariable UUID id) {
         UserDto user = userService.getUserById(id);
         return ResponseEntity.ok(new ApiResponse<>(200, "Utilisateur récupéré avec succès", user));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<UserDto>> updateUser(
-            @PathVariable String id,
+            @PathVariable UUID id,
             @Valid @RequestBody UserRequestValidator request
     ) {
         UserDto updatedUser = userService.updateUser(id, request);
@@ -46,7 +47,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
         return ResponseEntity.ok(new ApiResponse<>(200, "Utilisateur supprimé avec succès", null));
     }

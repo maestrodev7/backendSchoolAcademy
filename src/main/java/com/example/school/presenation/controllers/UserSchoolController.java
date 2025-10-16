@@ -27,6 +27,18 @@ public class UserSchoolController {
         return ResponseEntity.ok(new ApiResponse<>(200, "Relation User-School créée avec succès", dto));
     }
 
+    @GetMapping("/user/{userId}/schools")
+    public ResponseEntity<ApiResponse<List<UserSchoolDto>>> getSchoolsByUserId(@PathVariable UUID userId) {
+        List<UserSchoolDto> dtos = userSchoolService.getSchoolsByUserId(userId);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Écoles de l'utilisateur récupérées avec succès", dtos));
+    }
+
+    @GetMapping("/schools-with-admins")
+    public ResponseEntity<ApiResponse<List<UserSchoolDto>>> getSchoolsWithAdmins() {
+        List<UserSchoolDto> dtos = userSchoolService.getSchoolsWithAdmins();
+        return ResponseEntity.ok(new ApiResponse<>(200, "Liste des écoles avec leurs admins récupérée avec succès", dtos));
+    }
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<UserSchoolDto>>> getAllUserSchools() {
         List<UserSchoolDto> dtos = userSchoolService.getAll();

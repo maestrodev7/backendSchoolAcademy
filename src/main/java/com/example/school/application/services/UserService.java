@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,14 +64,14 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public UserDto getUserById(String id) {
+    public UserDto getUserById(UUID id) {
         return userRepository.findById(id)
                 .map(UserMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
     }
 
     @Override
-    public UserDto updateUser(String id, @NotNull UserRequestValidator request) {
+    public UserDto updateUser(UUID id, @NotNull UserRequestValidator request) {
         User existing = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
 
@@ -95,7 +96,7 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public void deleteUser(String id) {
+    public void deleteUser(UUID id) {
         if (!userRepository.existsById(id)) {
             throw new EntityNotFoundException("Utilisateur non trouvé");
         }

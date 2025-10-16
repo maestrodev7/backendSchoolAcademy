@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Repository
@@ -56,18 +57,18 @@ public class UserRepositoryImpl implements UserRepositoryInterface {
     }
 
     @Override
-    public Optional<User> findById(String id) {
+    public Optional<User> findById(UUID id) {
         return jpaUserRepository.findById(id)
                 .map(UserMapper::toDomain);
     }
 
     @Override
-    public boolean existsById(String id) {
+    public boolean existsById(UUID id) {
         return jpaUserRepository.existsById(id);
     }
 
     @Override
-    public void deleteById(String id) {
+    public void deleteById(UUID id) {
         jpaUserRepository.deleteById(id);
     }
 }
