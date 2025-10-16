@@ -10,7 +10,6 @@ import java.util.UUID;
 public interface JpaSchoolRepository extends JpaRepository<SchoolModel, UUID> {
     boolean existsByName(String name);
 
-    // Requête pour fetch les academicYears en même temps que les écoles
     @Query("SELECT DISTINCT s FROM SchoolModel s LEFT JOIN FETCH s.academicYears")
     List<SchoolModel> findAllWithAcademicYears();
 }

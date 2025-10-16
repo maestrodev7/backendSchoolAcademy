@@ -17,5 +17,8 @@ public class AcademicYear {
     @ToString.Exclude
     @JsonIgnore
     private Set<School> schools;
+
+    @ToString.Exclude
+    private Set<ClassRoom> classRooms;
 }
 
