@@ -2,10 +2,9 @@ package com.example.school.application.services;
 
 import com.example.school.common.dto.ClassroomDto;
 import com.example.school.common.mapper.ClassroomMapper;
-import com.example.school.domain.entities.ClassLevel;
-import com.example.school.domain.entities.ClassRoom;
-import com.example.school.domain.entities.Series;
+import com.example.school.domain.entities.*;
 import com.example.school.domain.repositories.ClassRoomRepositoryInterface;
+import com.example.school.domain.repositories.SchoolRepositoryInterface;
 import com.example.school.domain.services.ClassroomServiceInterface;
 import com.example.school.presenation.validators.ClassroomRequestValidator;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,15 +14,28 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class ClassroomService implements ClassroomServiceInterface {
 
     private final ClassRoomRepositoryInterface classroomRepository;
+    private final SchoolRepositoryInterface schoolRepository;
 
     @Override
     public ClassroomDto createClassroom(ClassroomRequestValidator request) {
+
+        // Récupérer l'école
+        School school = schoolRepository.findById(request.getSchoolId())
+                .orElseThrow(() -> new EntityNotFoundException("École non trouvée"));
+
+        // Récupérer l'année académique active
+        AcademicYear activeYear = school.getAcademicYears()
+                .stream()
+                .filter(AcademicYear::isActive)
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Aucune année académique active pour cette école"));
+
+        // Construire la classe
         ClassRoom classroom = new ClassRoom();
         classroom.setLabel(request.getLabel());
 
@@ -35,13 +47,18 @@ public class ClassroomService implements ClassroomServiceInterface {
         series.setId(request.getSeriesId());
         classroom.setSeries(series);
 
+        classroom.setSchool(school);
+        classroom.setAcademicYear(activeYear);
+
+        // Sauvegarder
         ClassRoom saved = classroomRepository.save(classroom);
+
         return ClassroomMapper.toDto(saved);
     }
 
     @Override
-    public List<ClassroomDto> getAllClassrooms() {
-        return classroomRepository.findAll()
+    public List<ClassroomDto> getClassroomsBySchool(UUID schoolId) {
+        return classroomRepository.findBySchool(schoolId)
                 .stream()
                 .map(ClassroomMapper::toDto)
                 .collect(Collectors.toList());

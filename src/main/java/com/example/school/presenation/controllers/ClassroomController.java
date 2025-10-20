@@ -25,10 +25,10 @@ public class ClassroomController {
         return ResponseEntity.ok(new ApiResponse<>(200, "Classe créée avec succès", dto));
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<ClassroomDto>>> getAll() {
-        List<ClassroomDto> list = classroomService.getAllClassrooms();
-        return ResponseEntity.ok(new ApiResponse<>(200, "Liste des classes récupérée avec succès", list));
+    @GetMapping("/school/{schoolId}")
+    public ResponseEntity<ApiResponse<List<ClassroomDto>>> getBySchool(@PathVariable UUID schoolId) {
+        List<ClassroomDto> list = classroomService.getClassroomsBySchool(schoolId);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Classes de l'école récupérées avec succès", list));
     }
 
     @GetMapping("/{id}")

@@ -10,4 +10,6 @@ public class ClassroomDto {
     private String label;
     private UUID classLevelId;
     private UUID seriesId;
+    private UUID schoolId;
+    private UUID academicYearId;
 }

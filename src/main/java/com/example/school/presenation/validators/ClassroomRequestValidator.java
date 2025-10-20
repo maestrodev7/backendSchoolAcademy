@@ -17,4 +17,7 @@ public class ClassroomRequestValidator {
 
     @NotNull(message = "La série est obligatoire")
     private UUID seriesId;
+
+    @NotNull(message = "L'école est obligatoire") // ✅ Ajouté
+    private UUID schoolId;
 }

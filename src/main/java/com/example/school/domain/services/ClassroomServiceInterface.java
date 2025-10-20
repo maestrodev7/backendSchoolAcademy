@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface ClassroomServiceInterface {
     ClassroomDto createClassroom(ClassroomRequestValidator request);
-    List<ClassroomDto> getAllClassrooms();
+    List<ClassroomDto> getClassroomsBySchool(UUID id);
     ClassroomDto getClassroomById(UUID id);
     ClassroomDto updateClassroom(UUID id, ClassroomRequestValidator request);
     void deleteClassroom(UUID id);

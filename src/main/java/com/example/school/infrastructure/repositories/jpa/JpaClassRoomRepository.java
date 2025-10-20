@@ -8,7 +8,16 @@ import java.util.List;
 import java.util.UUID;
 
 public interface JpaClassRoomRepository extends JpaRepository<ClassRoomModel, UUID> {
-    @Query("SELECT c FROM ClassRoomModel c WHERE c.school.id = :schoolId")
+    @Query("""
+        SELECT c
+        FROM ClassRoomModel c
+        WHERE c.school.id = :schoolId
+        AND c.academicYear.id IN (
+            SELECT ay.id FROM SchoolModel s
+            JOIN s.academicYears ay
+            WHERE s.id = :schoolId
+        )
+    """)
     List<ClassRoomModel> findBySchool(UUID schoolId);
 
     @Query("SELECT c FROM ClassRoomModel c WHERE c.academicYear.id = :academicYearId")

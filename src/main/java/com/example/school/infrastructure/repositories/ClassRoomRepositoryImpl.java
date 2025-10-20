@@ -32,14 +32,6 @@ public class ClassRoomRepositoryImpl implements ClassRoomRepositoryInterface {
     }
 
     @Override
-    public List<ClassRoom> findAll() {
-        return jpaClassRoomRepository.findAll()
-                .stream()
-                .map(ClassRoomMapper::toDomain)
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public List<ClassRoom> findBySchool(UUID schoolId) {
         return jpaClassRoomRepository.findBySchool(schoolId)
                 .stream()

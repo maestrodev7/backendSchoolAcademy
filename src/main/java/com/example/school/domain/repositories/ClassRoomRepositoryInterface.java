@@ -9,7 +9,6 @@ import java.util.UUID;
 public interface ClassRoomRepositoryInterface {
     ClassRoom save(ClassRoom classRoom);
     Optional<ClassRoom> findById(UUID id);
-    List<ClassRoom> findAll();
     List<ClassRoom> findBySchool(UUID schoolId);
     List<ClassRoom> findByAcademicYear(UUID academicYearId);
     void deleteById(UUID id);

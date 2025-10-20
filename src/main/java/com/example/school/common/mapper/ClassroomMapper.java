@@ -1,9 +1,7 @@
 package com.example.school.common.mapper;
 
 import com.example.school.common.dto.ClassroomDto;
-import com.example.school.domain.entities.ClassLevel;
-import com.example.school.domain.entities.ClassRoom;
-import com.example.school.domain.entities.Series;
+import com.example.school.domain.entities.*;
 
 public class ClassroomMapper {
 
@@ -20,6 +18,13 @@ public class ClassroomMapper {
 
         if (entity.getSeries() != null) {
             dto.setSeriesId(entity.getSeries().getId());
+        }
+        if (entity.getSchool() != null) {
+            dto.setSchoolId(entity.getSchool().getId());
+        }
+
+        if (entity.getAcademicYear() != null) {
+            dto.setAcademicYearId(entity.getAcademicYear().getId());
         }
 
         return dto;
@@ -42,6 +47,18 @@ public class ClassroomMapper {
             Series s = new Series();
             s.setId(dto.getSeriesId());
             entity.setSeries(s);
+        }
+
+        if (dto.getSchoolId() != null) {
+            School school = new School();
+            school.setId(dto.getSchoolId());
+            entity.setSchool(school);
+        }
+
+        if (dto.getAcademicYearId() != null) {
+            AcademicYear ay = new AcademicYear();
+            ay.setId(dto.getAcademicYearId());
+            entity.setAcademicYear(ay);
         }
 
         return entity;
