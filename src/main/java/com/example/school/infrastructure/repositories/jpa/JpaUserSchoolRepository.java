@@ -12,9 +12,7 @@ public interface JpaUserSchoolRepository extends JpaRepository<UserSchoolModel, 
 
     List<UserSchoolModel> findByUserId(UUID userId);
 
-    List<UserSchoolModel> findBySchoolId(UUID schoolId);
-
-    List<UserSchoolModel> findByRole(String role);
+    List<UserSchoolModel> findBySchoolIdAndRole(UUID schoolId, String role);
 
     @Query("SELECT u FROM UserSchoolModel u WHERE UPPER(u.role) IN ('ADMIN', 'PROMOTEUR')")
     List<UserSchoolModel> findAllAdminsOrPromoteurs();

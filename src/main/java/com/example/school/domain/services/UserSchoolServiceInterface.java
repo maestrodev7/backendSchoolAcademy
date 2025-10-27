@@ -13,4 +13,5 @@ public interface UserSchoolServiceInterface {
     void delete(UUID id);
     List<UserSchoolDto> getSchoolsWithAdmins();
     List<UserSchoolDto> getSchoolsByUserId(UUID userId);
+    public List<UserSchoolDto> getTeachersBySchoolId(UUID schoolId);
 }

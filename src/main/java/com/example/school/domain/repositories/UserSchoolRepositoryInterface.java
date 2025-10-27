@@ -13,4 +13,5 @@ public interface UserSchoolRepositoryInterface {
     void deleteById(UUID id);
     List<UserSchool> findAdminsOrPromoteurs();
     List<UserSchool> findByUserId(UUID userId);
+    List<UserSchool> findTeachersBySchoolId(UUID schoolId);
 }

@@ -39,6 +39,13 @@ public class UserSchoolController {
         return ResponseEntity.ok(new ApiResponse<>(200, "Liste des écoles avec leurs admins récupérée avec succès", dtos));
     }
 
+
+    @GetMapping("/school/{schoolId}/teachers")
+    public ResponseEntity<ApiResponse<List<UserSchoolDto>>> getTeachersBySchoolId(@PathVariable UUID schoolId) {
+        List<UserSchoolDto> dtos = userSchoolService.getTeachersBySchoolId(schoolId);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Enseignants de l'école récupérés avec succès", dtos));
+    }
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<UserSchoolDto>>> getAllUserSchools() {
         List<UserSchoolDto> dtos = userSchoolService.getAll();

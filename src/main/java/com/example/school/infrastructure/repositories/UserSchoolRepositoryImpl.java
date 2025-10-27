@@ -52,7 +52,12 @@ public class UserSchoolRepositoryImpl implements UserSchoolRepositoryInterface {
                 .collect(Collectors.toList());
     }
 
-
+    public List<UserSchool> findTeachersBySchoolId(UUID schoolId) {
+        return jpaRepository.findBySchoolIdAndRole(schoolId, "ENSEIGNANT")
+                .stream()
+                .map(UserSchoolMapper::toDomain)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public void deleteById(UUID id) {

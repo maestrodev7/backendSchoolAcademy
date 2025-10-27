@@ -6,6 +6,8 @@ import com.example.school.infrastructure.mappers.UserMapper;
 import com.example.school.infrastructure.models.UserModel;
 import com.example.school.infrastructure.repositories.jpa.JpaUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -54,6 +56,12 @@ public class UserRepositoryImpl implements UserRepositoryInterface {
                 .stream()
                 .map(UserMapper::toDomain)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<User> filterUsers(String username, String email, String role, String phoneNumber, Pageable pageable) {
+        Page<UserModel> page = jpaUserRepository.filterUsers(username, email, phoneNumber, role, pageable);
+        return page.map(UserMapper::toDomain);
     }
 
     @Override

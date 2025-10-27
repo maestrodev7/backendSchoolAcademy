@@ -139,4 +139,42 @@ public class UserSchoolService implements UserSchoolServiceInterface {
         }
         repository.deleteById(id);
     }
+
+    public List<UserSchoolDto> getTeachersBySchoolId(UUID schoolId) {
+        return repository.findTeachersBySchoolId(schoolId)
+                .stream()
+                .map(us -> {
+                    UserSchoolDto dto = UserSchoolMapper.toDto(us);
+
+                    // Charger les informations de l'utilisateur
+                    userRepository.findById(us.getUserId())
+                            .ifPresent(user -> {
+                                UserDto userDto = new UserDto();
+                                userDto.setId(user.getId());
+                                userDto.setUsername(user.getUsername());
+                                userDto.setFirstName(user.getFirstName());
+                                userDto.setLastName(user.getLastName());
+                                userDto.setEmail(user.getEmail());
+                                userDto.setPhoneNumber(user.getPhoneNumber());
+                                userDto.setRoles(user.getRoles());
+                                dto.setUser(userDto);
+                            });
+
+                    // Charger les informations de l'école
+                    schoolRepository.findById(us.getSchoolId())
+                            .ifPresent(school -> {
+                                SchoolDto schoolDto = new SchoolDto();
+                                schoolDto.setId(school.getId());
+                                schoolDto.setName(school.getName());
+                                schoolDto.setAddress(school.getAddress());
+                                schoolDto.setPhoneNumber(school.getPhoneNumber());
+                                schoolDto.setEmail(school.getEmail());
+                                dto.setSchool(schoolDto);
+                            });
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
 }

@@ -11,6 +11,8 @@ import com.example.school.presenation.validators.UserRequestValidator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -56,12 +58,15 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(UserMapper::toDto)
-                .collect(Collectors.toList());
+    public Page<UserDto> filterUsers(String username,
+                                     String email,
+                                     String role,
+                                     String phoneNumber,
+                                     Pageable pageable) {
+        Page<User> users = userRepository.filterUsers(username, email, role, phoneNumber, pageable);
+        return users.map(UserMapper::toDto);
     }
+
 
     @Override
     public UserDto getUserById(UUID id) {
