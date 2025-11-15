@@ -13,6 +13,8 @@ public interface ClassFeeRepositoryInterface {
 
     List<ClassFee> findByClassRoom(UUID classRoomId);
 
+    List<ClassFee> findBySchool(UUID schoolId);
+
     void deleteById(UUID id);
 }
 

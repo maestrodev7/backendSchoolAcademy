@@ -40,6 +40,14 @@ public class ClassFeeRepositoryImpl implements ClassFeeRepositoryInterface {
     }
 
     @Override
+    public List<ClassFee> findBySchool(UUID schoolId) {
+        return jpaClassFeeRepository.findByClassRoom_School_Id(schoolId)
+                .stream()
+                .map(ClassFeeMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void deleteById(UUID id) {
         jpaClassFeeRepository.deleteById(id);
     }

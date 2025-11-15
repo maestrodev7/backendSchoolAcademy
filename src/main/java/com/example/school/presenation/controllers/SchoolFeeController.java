@@ -59,6 +59,12 @@ public class SchoolFeeController {
         return ResponseEntity.ok(new ApiResponse<>(200, "Frais de classe créé avec succès", dto));
     }
 
+    @GetMapping("/class-fees")
+    public ResponseEntity<ApiResponse<List<ClassFeeDto>>> getAllClassFees(@PathVariable UUID schoolId) {
+        List<ClassFeeDto> data = feeManagementService.getClassFeesBySchool(schoolId);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Frais de l'école récupérés avec succès", data));
+    }
+
     @GetMapping("/class-fees/{classRoomId}")
     public ResponseEntity<ApiResponse<List<ClassFeeDto>>> getClassFees(
             @PathVariable UUID schoolId,

@@ -22,5 +22,7 @@ public interface FeeManagementServiceInterface {
     ClassFeeDto createClassFee(UUID schoolId, ClassFeeRequestValidator request);
 
     List<ClassFeeDto> getClassFeesByClass(UUID classRoomId);
+
+    List<ClassFeeDto> getClassFeesBySchool(UUID schoolId);
 }
 

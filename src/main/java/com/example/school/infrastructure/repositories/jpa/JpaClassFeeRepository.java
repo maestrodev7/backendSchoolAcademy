@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface JpaClassFeeRepository extends JpaRepository<ClassFeeModel, UUID> {
     List<ClassFeeModel> findByClassRoom_Id(UUID classRoomId);
+    List<ClassFeeModel> findByClassRoom_School_Id(UUID schoolId);
 }
