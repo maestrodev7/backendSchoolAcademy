@@ -3,6 +3,7 @@ package com.example.school.presenation.controllers;
 import com.example.school.common.dto.ApiResponse;
 import com.example.school.common.dto.PaymentDto;
 import com.example.school.common.dto.StudentRegistrationDto;
+import com.example.school.common.dto.PaymentStatusDto;
 import com.example.school.domain.services.StudentRegistrationServiceInterface;
 import com.example.school.presenation.validators.PaymentRequestValidator;
 import com.example.school.presenation.validators.StudentRegistrationRequestValidator;
@@ -53,9 +54,14 @@ public class StudentRegistrationController {
     }
 
     @GetMapping("/school/{schoolId}")
-    public ResponseEntity<ApiResponse<List<StudentRegistrationDto>>> getBySchool(@PathVariable UUID schoolId) {
-        List<StudentRegistrationDto> data = studentRegistrationService.getRegistrationsBySchool(schoolId);
-        return ResponseEntity.ok(new ApiResponse<>(200, "Inscriptions de l'école récupérées avec succès", data));
+	public ResponseEntity<ApiResponse<List<StudentRegistrationDto>>> getBySchool(
+			@PathVariable UUID schoolId,
+			@RequestParam(required = false) UUID classRoomId,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size
+	) {
+		List<StudentRegistrationDto> data = studentRegistrationService.getRegistrationsBySchool(schoolId, classRoomId, page, size);
+		return ResponseEntity.ok(new ApiResponse<>(200, "Inscriptions de l'école récupérées avec succès", data));
     }
 
     @GetMapping("/student/{studentId}")
@@ -83,5 +89,11 @@ public class StudentRegistrationController {
         List<PaymentDto> data = studentRegistrationService.getPayments(registrationId);
         return ResponseEntity.ok(new ApiResponse<>(200, "Paiements récupérés avec succès", data));
     }
+
+	@GetMapping("/{registrationId}/payment-status")
+	public ResponseEntity<ApiResponse<PaymentStatusDto>> getPaymentStatus(@PathVariable UUID registrationId) {
+		PaymentStatusDto dto = studentRegistrationService.getPaymentStatus(registrationId);
+		return ResponseEntity.ok(new ApiResponse<>(200, "État des paiements récupéré avec succès", dto));
+	}
 }
 

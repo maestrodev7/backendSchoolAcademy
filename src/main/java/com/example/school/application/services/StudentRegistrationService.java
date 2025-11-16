@@ -1,6 +1,8 @@
 package com.example.school.application.services;
 
 import com.example.school.common.dto.PaymentDto;
+import com.example.school.common.dto.PaymentStatusDto;
+import com.example.school.common.dto.PaymentStatusItemDto;
 import com.example.school.common.dto.StudentRegistrationDto;
 import com.example.school.common.exceptions.BusinessRuleException;
 import com.example.school.common.exceptions.ResourceAlreadyExistsException;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -110,6 +113,24 @@ public class StudentRegistrationService implements StudentRegistrationServiceInt
                 .collect(Collectors.toList());
     }
 
+	@Override
+	public List<StudentRegistrationDto> getRegistrationsBySchool(UUID schoolId, UUID classRoomId, int page, int size) {
+		if (page < 0) page = 0;
+		if (size <= 0) size = 20;
+
+		List<StudentRegistration> source = (classRoomId != null)
+				? studentRegistrationRepository.findByClassRoom(classRoomId)
+				: studentRegistrationRepository.findBySchool(schoolId);
+
+		int fromIndex = Math.min(page * size, source.size());
+		int toIndex = Math.min(fromIndex + size, source.size());
+
+		return source.subList(fromIndex, toIndex)
+				.stream()
+				.map(StudentRegistrationMapper::toDto)
+				.collect(Collectors.toList());
+	}
+
     @Override
     public List<StudentRegistrationDto> getRegistrationsByStudent(UUID studentId) {
         return studentRegistrationRepository.findByStudent(studentId)
@@ -156,6 +177,75 @@ public class StudentRegistrationService implements StudentRegistrationServiceInt
                 .map(PaymentDtoMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+	@Override
+	public PaymentStatusDto getPaymentStatus(UUID registrationId) {
+		StudentRegistration registration = studentRegistrationRepository.findById(registrationId)
+				.orElseThrow(() -> new EntityNotFoundException("Inscription introuvable"));
+
+		UUID classRoomId = registration.getClassRoom().getId();
+
+		List<ClassFee> classFees = classFeeRepository.findByClassRoom(classRoomId);
+		List<Payment> payments = paymentRepository.findByRegistration(registrationId);
+
+		// Group payments by classFeeId and sum
+		Map<UUID, BigDecimal> paidByFee = payments.stream()
+				.filter(p -> p.getClassFee() != null && p.getClassFee().getId() != null)
+				.collect(Collectors.groupingBy(p -> p.getClassFee().getId(),
+						Collectors.mapping(Payment::getAmountPaid,
+								Collectors.reducing(BigDecimal.ZERO, (a, b) -> (a != null ? a : BigDecimal.ZERO).add(b != null ? b : BigDecimal.ZERO)))));
+
+		// Index fees by id from class repository
+		Map<UUID, ClassFee> feeById = classFees.stream()
+				.filter(f -> f.getId() != null)
+				.collect(Collectors.toMap(ClassFee::getId, f -> f, (a, b) -> a));
+
+		// Ensure any fee referenced by a payment is represented even if not returned by class fees
+		payments.stream()
+				.map(Payment::getClassFee)
+				.filter(f -> f != null && f.getId() != null)
+				.forEach(f -> feeById.putIfAbsent(f.getId(), f));
+
+		List<PaymentStatusItemDto> items = feeById.values().stream().map(fee -> {
+			BigDecimal expected = fee.getAmount() != null ? fee.getAmount() : BigDecimal.ZERO;
+			BigDecimal paid = paidByFee.getOrDefault(fee.getId(), BigDecimal.ZERO);
+			BigDecimal remaining = expected.subtract(paid);
+			if (remaining.compareTo(BigDecimal.ZERO) < 0) {
+				remaining = BigDecimal.ZERO;
+			}
+
+			PaymentStatusItemDto item = new PaymentStatusItemDto();
+			item.setClassFeeId(fee.getId());
+			item.setFeeName(fee.getFeeType() != null ? fee.getFeeType().getName() : null);
+			item.setTrancheLabel(fee.getPaymentPlan() != null ? fee.getPaymentPlan().getLabel() : null);
+			item.setTrancheOrder(fee.getPaymentPlan() != null ? fee.getPaymentPlan().getOrderIndex() : null);
+			item.setExpectedAmount(expected);
+			item.setPaidAmount(paid);
+			item.setRemainingAmount(remaining);
+			item.setFullyPaid(expected.compareTo(BigDecimal.ZERO) == 0 || paid.compareTo(expected) >= 0);
+			return item;
+		}).sorted((a, b) -> {
+			Integer ao = a.getTrancheOrder() != null ? a.getTrancheOrder() : Integer.MAX_VALUE;
+			Integer bo = b.getTrancheOrder() != null ? b.getTrancheOrder() : Integer.MAX_VALUE;
+			return Integer.compare(ao, bo);
+		}).collect(Collectors.toList());
+
+		BigDecimal totalExpected = items.stream().map(PaymentStatusItemDto::getExpectedAmount)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		BigDecimal totalPaid = items.stream().map(PaymentStatusItemDto::getPaidAmount)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		BigDecimal totalRemaining = items.stream().map(PaymentStatusItemDto::getRemainingAmount)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+
+		PaymentStatusDto dto = new PaymentStatusDto();
+		dto.setRegistrationId(registrationId);
+		dto.setConfirmed(registration.isConfirmed());
+		dto.setTotalExpected(totalExpected);
+		dto.setTotalPaid(totalPaid);
+		dto.setTotalRemaining(totalRemaining);
+		dto.setItems(items);
+		return dto;
+	}
 
     private void validatePaymentAmount(StudentRegistration registration,
                                        ClassFee classFee,
