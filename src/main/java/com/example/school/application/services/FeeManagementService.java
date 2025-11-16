@@ -131,12 +131,15 @@ public class FeeManagementService implements FeeManagementServiceInterface {
     }
 
     @Override
-    public List<ClassFeeDto> getClassFeesBySchool(UUID schoolId) {
+    public List<ClassFeeDto> getClassFeesBySchool(UUID schoolId, UUID classRoomId) {
         schoolRepository.findById(schoolId)
                 .orElseThrow(() -> new EntityNotFoundException("École introuvable"));
 
-        return classFeeRepository.findBySchool(schoolId)
-                .stream()
+        List<ClassFee> classFees = (classRoomId != null)
+                ? classFeeRepository.findByClassRoom(classRoomId)
+                : classFeeRepository.findBySchool(schoolId);
+
+        return classFees.stream()
                 .map(ClassFeeDtoMapper::toDto)
                 .collect(Collectors.toList());
     }

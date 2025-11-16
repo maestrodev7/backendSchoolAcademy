@@ -23,6 +23,6 @@ public interface FeeManagementServiceInterface {
 
     List<ClassFeeDto> getClassFeesByClass(UUID classRoomId);
 
-    List<ClassFeeDto> getClassFeesBySchool(UUID schoolId);
+    List<ClassFeeDto> getClassFeesBySchool(UUID schoolId, UUID classRoomId);
 }
 
