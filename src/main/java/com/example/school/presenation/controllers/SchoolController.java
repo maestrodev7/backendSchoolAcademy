@@ -24,7 +24,7 @@ public class SchoolController {
         SchoolDto school = schoolService.createSchool(request);
         return ResponseEntity.ok(new ApiResponse<>(200, "École créée avec succès", school));
     }
-
+ 
     @GetMapping
     public ResponseEntity<ApiResponse<List<SchoolDto>>> getAllSchools() {
         List<SchoolDto> schools = schoolService.getAllSchools();
@@ -53,5 +53,13 @@ public class SchoolController {
     public ResponseEntity<ApiResponse<Void>> deleteSchool(@PathVariable UUID id) {
         schoolService.deleteSchool(id);
         return ResponseEntity.ok(new ApiResponse<>(200, "École supprimée avec succès", null));
+    }
+
+    @PutMapping("/{schoolId}/current-academic-year/{academicYearId}")
+    public ResponseEntity<ApiResponse<SchoolDto>> setCurrentAcademicYear(
+            @PathVariable UUID schoolId,
+            @PathVariable UUID academicYearId) {
+        SchoolDto updatedSchool = schoolService.setCurrentAcademicYear(schoolId, academicYearId);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Année académique en cours modifiée avec succès", updatedSchool));
     }
 }

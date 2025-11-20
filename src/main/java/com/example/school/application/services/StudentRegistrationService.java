@@ -17,6 +17,9 @@ import com.example.school.domain.repositories.StudentRegistrationRepositoryInter
 import com.example.school.domain.repositories.UserRepositoryInterface;
 import com.example.school.domain.repositories.ClassRoomRepositoryInterface;
 import com.example.school.domain.repositories.AcademicYearRepositoryInterface;
+import com.example.school.domain.repositories.SchoolRepositoryInterface;
+import com.example.school.domain.entities.School;
+import com.example.school.domain.entities.AcademicYear;
 import com.example.school.domain.services.StudentRegistrationServiceInterface;
 import com.example.school.presenation.validators.PaymentRequestValidator;
 import com.example.school.presenation.validators.StudentRegistrationRequestValidator;
@@ -41,6 +44,7 @@ public class StudentRegistrationService implements StudentRegistrationServiceInt
     private final ClassRoomRepositoryInterface classRoomRepository;
     private final UserRepositoryInterface userRepository;
     private final AcademicYearRepositoryInterface academicYearRepository;
+    private final SchoolRepositoryInterface schoolRepository;
 
     @Override
     public StudentRegistrationDto registerStudent(StudentRegistrationRequestValidator request) {
@@ -107,8 +111,22 @@ public class StudentRegistrationService implements StudentRegistrationServiceInt
 
     @Override
     public List<StudentRegistrationDto> getRegistrationsBySchool(UUID schoolId) {
-        return studentRegistrationRepository.findBySchool(schoolId)
+        // Récupérer l'école et son année académique active
+        School school = schoolRepository.findById(schoolId)
+                .orElseThrow(() -> new EntityNotFoundException("École non trouvée"));
+        
+        AcademicYear activeYear = school.getAcademicYears()
                 .stream()
+                .filter(AcademicYear::isActive)
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Aucune année académique active pour cette école"));
+        
+        // Filtrer les inscriptions par l'année académique active
+        return studentRegistrationRepository.findByAcademicYear(activeYear.getId())
+                .stream()
+                .filter(registration -> registration.getClassRoom() != null 
+                        && registration.getClassRoom().getSchool() != null
+                        && registration.getClassRoom().getSchool().getId().equals(schoolId))
                 .map(StudentRegistrationMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -118,9 +136,33 @@ public class StudentRegistrationService implements StudentRegistrationServiceInt
 		if (page < 0) page = 0;
 		if (size <= 0) size = 20;
 
-		List<StudentRegistration> source = (classRoomId != null)
-				? studentRegistrationRepository.findByClassRoom(classRoomId)
-				: studentRegistrationRepository.findBySchool(schoolId);
+		// Récupérer l'école et son année académique active
+		School school = schoolRepository.findById(schoolId)
+				.orElseThrow(() -> new EntityNotFoundException("École non trouvée"));
+		
+		AcademicYear activeYear = school.getAcademicYears()
+				.stream()
+				.filter(AcademicYear::isActive)
+				.findFirst()
+				.orElseThrow(() -> new EntityNotFoundException("Aucune année académique active pour cette école"));
+
+		List<StudentRegistration> source;
+		if (classRoomId != null) {
+			// Filtrer par classe ET par année académique active
+			source = studentRegistrationRepository.findByClassRoom(classRoomId)
+					.stream()
+					.filter(registration -> registration.getAcademicYear() != null
+							&& registration.getAcademicYear().getId().equals(activeYear.getId()))
+					.collect(Collectors.toList());
+		} else {
+			// Filtrer par école ET par année académique active
+			source = studentRegistrationRepository.findByAcademicYear(activeYear.getId())
+					.stream()
+					.filter(registration -> registration.getClassRoom() != null 
+							&& registration.getClassRoom().getSchool() != null
+							&& registration.getClassRoom().getSchool().getId().equals(schoolId))
+					.collect(Collectors.toList());
+		}
 
 		int fromIndex = Math.min(page * size, source.size());
 		int toIndex = Math.min(fromIndex + size, source.size());

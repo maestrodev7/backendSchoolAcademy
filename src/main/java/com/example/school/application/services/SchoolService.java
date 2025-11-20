@@ -5,6 +5,7 @@ import com.example.school.common.exceptions.ResourceAlreadyExistsException;
 import com.example.school.common.mapper.SchoolMapper;
 import com.example.school.domain.entities.AcademicYear;
 import com.example.school.domain.entities.School;
+import com.example.school.domain.repositories.AcademicYearRepositoryInterface;
 import com.example.school.domain.repositories.SchoolRepositoryInterface;
 import com.example.school.domain.services.SchoolServiceInterface;
 import com.example.school.presenation.validators.SchoolRequestValidator;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class SchoolService implements SchoolServiceInterface {
 
     private final SchoolRepositoryInterface schoolRepository;
+    private final AcademicYearRepositoryInterface academicYearRepository;
 
     @Override
     public SchoolDto createSchool(@NotNull SchoolRequestValidator request) {
@@ -99,5 +101,41 @@ public class SchoolService implements SchoolServiceInterface {
             throw new EntityNotFoundException("École non trouvée");
         }
         schoolRepository.deleteById(id);
+    }
+
+    @Override
+    public SchoolDto setCurrentAcademicYear(UUID schoolId, UUID academicYearId) {
+        // Vérifier que l'école existe
+        School school = schoolRepository.findById(schoolId)
+                .orElseThrow(() -> new EntityNotFoundException("École non trouvée"));
+
+        // Vérifier que l'année académique existe
+        AcademicYear newAcademicYear = academicYearRepository.findById(academicYearId)
+                .orElseThrow(() -> new EntityNotFoundException("Année académique non trouvée"));
+
+        // Désactiver l'ancienne année académique liée à l'école (si elle existe)
+        if (school.getAcademicYears() != null && !school.getAcademicYears().isEmpty()) {
+            for (AcademicYear oldYear : school.getAcademicYears()) {
+                if (oldYear.isActive()) {
+                    AcademicYear yearToDeactivate = academicYearRepository.findById(oldYear.getId())
+                            .orElseThrow(() -> new EntityNotFoundException("Année académique non trouvée"));
+                    yearToDeactivate.setActive(false);
+                    academicYearRepository.save(yearToDeactivate);
+                }
+            }
+        }
+
+        // Activer la nouvelle année académique
+        newAcademicYear.setActive(true);
+        academicYearRepository.save(newAcademicYear);
+
+        // Mettre à jour la relation entre l'école et la nouvelle année académique
+        Set<AcademicYear> academicYears = new HashSet<>();
+        academicYears.add(newAcademicYear);
+        school.setAcademicYears(academicYears);
+        
+        School updatedSchool = schoolRepository.save(school);
+        
+        return SchoolMapper.toDto(updatedSchool);
     }
 }

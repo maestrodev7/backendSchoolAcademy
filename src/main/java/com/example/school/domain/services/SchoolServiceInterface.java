@@ -17,4 +17,6 @@ public interface SchoolServiceInterface {
     SchoolDto updateSchool(UUID id, SchoolRequestValidator request);
 
     void deleteSchool(UUID id);
+
+    SchoolDto setCurrentAcademicYear(UUID schoolId, UUID academicYearId);
 }

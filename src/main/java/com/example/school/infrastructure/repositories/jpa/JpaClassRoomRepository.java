@@ -12,11 +12,6 @@ public interface JpaClassRoomRepository extends JpaRepository<ClassRoomModel, UU
         SELECT c
         FROM ClassRoomModel c
         WHERE c.school.id = :schoolId
-        AND c.academicYear.id IN (
-            SELECT ay.id FROM SchoolModel s
-            JOIN s.academicYears ay
-            WHERE s.id = :schoolId
-        )
     """)
     List<ClassRoomModel> findBySchool(UUID schoolId);
 
