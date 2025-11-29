@@ -28,7 +28,8 @@ public class SchoolRepositoryImpl implements SchoolRepositoryInterface {
 
     @Override
     public Optional<School> findById(UUID id) {
-        return jpaSchoolRepository.findById(id).map(SchoolMapper::toDomain);
+        // Utiliser findByIdWithAcademicYears pour charger les années académiques
+        return jpaSchoolRepository.findByIdWithAcademicYears(id).map(SchoolMapper::toDomain);
     }
     @Override
     public List<School> findAll() {

@@ -85,9 +85,21 @@ public class SubjectService implements SubjectServiceInterface {
     public List<SubjectDto> getSubjectsByClassroom(UUID classroomId) {
         List<ClassRoomSubject> associations = classRoomSubjectRepository.findByClassRoomId(classroomId);
         
+        // Charger les sujets avec leurs associations classRoomSubjects
         return associations.stream()
-                .map(ClassRoomSubject::getSubject)
-                .map(SubjectMapper::toDto)
+                .map(association -> {
+                    // Récupérer le sujet complet avec ses associations classRoomSubjects chargées
+                    Subject subject = association.getSubject();
+                    if (subject != null && subject.getId() != null) {
+                        // Utiliser findByIdWithClassRooms pour charger le sujet avec toutes ses associations
+                        return subjectRepository.findById(subject.getId())
+                                .map(SubjectMapper::toDto)
+                                .orElse(null);
+                    }
+                    return null;
+                })
+                .filter(dto -> dto != null)
+                .distinct() // Éviter les doublons si une matière a plusieurs associations
                 .collect(Collectors.toList());
     }
 }

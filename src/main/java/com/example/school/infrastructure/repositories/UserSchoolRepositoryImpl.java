@@ -60,6 +60,12 @@ public class UserSchoolRepositoryImpl implements UserSchoolRepositoryInterface {
     }
 
     @Override
+    public Optional<UserSchool> findByUserIdAndSchoolId(UUID userId, UUID schoolId) {
+        return jpaRepository.findByUserIdAndSchoolId(userId, schoolId)
+                .map(UserSchoolMapper::toDomain);
+    }
+
+    @Override
     public void deleteById(UUID id) {
         jpaRepository.deleteById(id);
     }

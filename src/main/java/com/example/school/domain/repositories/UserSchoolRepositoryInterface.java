@@ -14,4 +14,5 @@ public interface UserSchoolRepositoryInterface {
     List<UserSchool> findAdminsOrPromoteurs();
     List<UserSchool> findByUserId(UUID userId);
     List<UserSchool> findTeachersBySchoolId(UUID schoolId);
+    Optional<UserSchool> findByUserIdAndSchoolId(UUID userId, UUID schoolId);
 }
