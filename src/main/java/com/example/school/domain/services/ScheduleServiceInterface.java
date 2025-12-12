@@ -17,6 +17,7 @@ public interface ScheduleServiceInterface {
     List<ScheduleDto> getBySchool(UUID schoolId);
     List<ScheduleDto> getByClassRoomAndDay(UUID classRoomId, DayOfWeek dayOfWeek);
     List<ScheduleDto> getByTeacherAndDay(UUID teacherSubjectId, DayOfWeek dayOfWeek);
+    List<ScheduleDto> getByAcademicYear(UUID academicYearId);
     ScheduleDto update(UUID id, UpdateScheduleValidator request);
     void delete(UUID id);
     void deleteByClassRoom(UUID classRoomId);

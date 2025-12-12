@@ -14,5 +14,6 @@ public class User {
     private String email;
     private String password;
     private String phoneNumber;
+    private boolean passwordChanged = false; // Indique si l'utilisateur a changé son mot de passe initial
     private Set<Role> roles;
 }

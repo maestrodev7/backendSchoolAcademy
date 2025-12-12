@@ -79,6 +79,16 @@ public class TeacherSubjectController {
     }
 
     /**
+     * Récupérer toutes les associations enseignant-matière d'une année académique
+     */
+    @GetMapping("/academic-year/{academicYearId}")
+    public ResponseEntity<ApiResponse<List<TeacherSubjectDto>>> getByAcademicYear(
+            @PathVariable UUID academicYearId) {
+        List<TeacherSubjectDto> list = teacherSubjectService.getByAcademicYear(academicYearId);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Associations enseignant-matière de l'année récupérées avec succès", list));
+    }
+
+    /**
      * Mettre à jour une association enseignant-matière
      */
     @PutMapping("/{id}")

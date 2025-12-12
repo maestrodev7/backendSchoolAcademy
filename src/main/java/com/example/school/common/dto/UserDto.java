@@ -15,5 +15,6 @@ public class UserDto {
     private String phoneNumber;
     private String password;
     private String email;
+    private boolean passwordChanged;
     private Set<Role> roles;
 }

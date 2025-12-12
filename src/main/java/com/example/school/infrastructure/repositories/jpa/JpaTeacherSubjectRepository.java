@@ -33,5 +33,8 @@ public interface JpaTeacherSubjectRepository extends JpaRepository<TeacherSubjec
     // Trouver toutes les associations d'une école (pour optimisation future)
     @Query("SELECT ts FROM TeacherSubjectModel ts WHERE ts.schoolId = :schoolId")
     List<TeacherSubjectModel> findBySchoolIdWithDetails(@Param("schoolId") UUID schoolId);
+    
+    // Trouver toutes les associations d'une année académique
+    List<TeacherSubjectModel> findByAcademicYearId(UUID academicYearId);
 }
 

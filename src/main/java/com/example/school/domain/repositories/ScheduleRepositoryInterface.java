@@ -20,6 +20,7 @@ public interface ScheduleRepositoryInterface {
             UUID classRoomId, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime);
     List<Schedule> findConflictingSchedulesForTeacher(
             UUID teacherSubjectId, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime);
+    List<Schedule> findByAcademicYear(UUID academicYearId);
     void deleteById(UUID id);
     void deleteByClassRoomId(UUID classRoomId);
 }

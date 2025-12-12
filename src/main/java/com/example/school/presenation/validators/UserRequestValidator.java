@@ -22,7 +22,7 @@ public class UserRequestValidator {
     @NotBlank(message = "Email cannot be blank")
     private String email;
 
-    @NotBlank(message = "Password cannot be blank")
+    // Le mot de passe est optionnel lors de la création - un mot de passe aléatoire sera généré si non fourni
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
 

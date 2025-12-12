@@ -171,6 +171,14 @@ public class TeacherSubjectService implements TeacherSubjectServiceInterface {
     }
 
     @Override
+    public List<TeacherSubjectDto> getByAcademicYear(UUID academicYearId) {
+        return teacherSubjectRepository.findByAcademicYear(academicYearId)
+                .stream()
+                .map(ts -> TeacherSubjectMapper.toDto(ts, userSchoolRepository, subjectRepository, schoolRepository, userRepository))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public TeacherSubjectDto update(UUID id, TeacherSubjectRequestValidator request) {
         TeacherSubject existing = teacherSubjectRepository.findById(id)

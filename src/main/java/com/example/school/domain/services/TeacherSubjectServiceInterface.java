@@ -15,6 +15,7 @@ public interface TeacherSubjectServiceInterface {
     List<TeacherSubjectDto> getBySubject(UUID subjectId);
     List<TeacherSubjectDto> getByTeacherAndSchool(UUID userSchoolId, UUID schoolId);
     List<TeacherSubjectDto> getBySubjectAndSchool(UUID subjectId, UUID schoolId);
+    List<TeacherSubjectDto> getByAcademicYear(UUID academicYearId);
     TeacherSubjectDto update(UUID id, TeacherSubjectRequestValidator request);
     void delete(UUID id);
 }

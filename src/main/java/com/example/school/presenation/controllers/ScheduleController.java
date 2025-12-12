@@ -100,6 +100,16 @@ public class ScheduleController {
     }
 
     /**
+     * Récupérer l'emploi du temps d'une année académique
+     */
+    @GetMapping("/academic-year/{academicYearId}")
+    public ResponseEntity<ApiResponse<List<ScheduleDto>>> getByAcademicYear(
+            @PathVariable UUID academicYearId) {
+        List<ScheduleDto> list = scheduleService.getByAcademicYear(academicYearId);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Emploi du temps de l'année récupéré avec succès", list));
+    }
+
+    /**
      * Mettre à jour un créneau d'emploi du temps
      */
     @PutMapping("/{id}")

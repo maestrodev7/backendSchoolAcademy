@@ -103,6 +103,14 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryInterface {
     }
 
     @Override
+    public List<Schedule> findByAcademicYear(UUID academicYearId) {
+        return jpaScheduleRepository.findByAcademicYearIdOrderByDayOfWeekAscStartTimeAsc(academicYearId)
+                .stream()
+                .map(ScheduleMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void deleteById(UUID id) {
         jpaScheduleRepository.deleteById(id);
     }

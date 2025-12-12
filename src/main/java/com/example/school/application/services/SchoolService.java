@@ -26,6 +26,7 @@ public class SchoolService implements SchoolServiceInterface {
 
     private final SchoolRepositoryInterface schoolRepository;
     private final AcademicYearRepositoryInterface academicYearRepository;
+    private final SchoolInitializationService schoolInitializationService;
 
     @Override
     public SchoolDto createSchool(@NotNull SchoolRequestValidator request) {
@@ -49,6 +50,13 @@ public class SchoolService implements SchoolServiceInterface {
         school.setAcademicYears(academicYears);
 
         School saved = schoolRepository.save(school);
+
+        if (request.getAcademicYearIds() != null) {
+            request.getAcademicYearIds().forEach(yearId ->
+                    schoolInitializationService.initializeDefaultStructure(saved.getId(), yearId)
+            );
+        }
+
         return SchoolMapper.toDto(saved);
     }
 
@@ -105,15 +113,13 @@ public class SchoolService implements SchoolServiceInterface {
 
     @Override
     public SchoolDto setCurrentAcademicYear(UUID schoolId, UUID academicYearId) {
-        // Vérifier que l'école existe
+        
         School school = schoolRepository.findById(schoolId)
                 .orElseThrow(() -> new EntityNotFoundException("École non trouvée"));
 
-        // Vérifier que l'année académique existe
         AcademicYear newAcademicYear = academicYearRepository.findById(academicYearId)
                 .orElseThrow(() -> new EntityNotFoundException("Année académique non trouvée"));
 
-        // Désactiver l'ancienne année académique liée à l'école (si elle existe)
         if (school.getAcademicYears() != null && !school.getAcademicYears().isEmpty()) {
             for (AcademicYear oldYear : school.getAcademicYears()) {
                 if (oldYear.isActive()) {
@@ -125,17 +131,16 @@ public class SchoolService implements SchoolServiceInterface {
             }
         }
 
-        // Activer la nouvelle année académique
         newAcademicYear.setActive(true);
         academicYearRepository.save(newAcademicYear);
 
-        // Mettre à jour la relation entre l'école et la nouvelle année académique
         Set<AcademicYear> academicYears = new HashSet<>();
         academicYears.add(newAcademicYear);
         school.setAcademicYears(academicYears);
-        
+
         School updatedSchool = schoolRepository.save(school);
-        
+
+        schoolInitializationService.initializeDefaultStructure(schoolId, academicYearId);
         return SchoolMapper.toDto(updatedSchool);
     }
 }

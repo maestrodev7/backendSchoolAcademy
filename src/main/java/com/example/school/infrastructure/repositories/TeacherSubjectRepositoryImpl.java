@@ -89,6 +89,14 @@ public class TeacherSubjectRepositoryImpl implements TeacherSubjectRepositoryInt
     }
 
     @Override
+    public List<TeacherSubject> findByAcademicYear(UUID academicYearId) {
+        return jpaTeacherSubjectRepository.findByAcademicYearId(academicYearId)
+                .stream()
+                .map(TeacherSubjectMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void deleteById(UUID id) {
         jpaTeacherSubjectRepository.deleteById(id);
     }

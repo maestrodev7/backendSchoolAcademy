@@ -16,6 +16,7 @@ public interface TeacherSubjectRepositoryInterface {
     List<TeacherSubject> findBySchoolId(UUID schoolId);
     Optional<TeacherSubject> findByUserSchoolIdAndSubjectIdAndSchoolId(
             UUID userSchoolId, UUID subjectId, UUID schoolId);
+    List<TeacherSubject> findByAcademicYear(UUID academicYearId);
     void deleteById(UUID id);
 }
 

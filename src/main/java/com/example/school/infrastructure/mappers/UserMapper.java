@@ -14,6 +14,7 @@ public class UserMapper {
         user.setEmail(model.getEmail());
         user.setPassword(model.getPassword());
         user.setPhoneNumber(model.getPhoneNumber());
+        user.setPasswordChanged(model.isPasswordChanged());
         user.setRoles(model.getRoles());
         return user;
     }
@@ -28,6 +29,7 @@ public class UserMapper {
         model.setEmail(user.getEmail());
         model.setPassword(user.getPassword());
         model.setPhoneNumber(user.getPhoneNumber());
+        model.setPasswordChanged(user.isPasswordChanged());
         model.setRoles(user.getRoles());
         return model;
     }

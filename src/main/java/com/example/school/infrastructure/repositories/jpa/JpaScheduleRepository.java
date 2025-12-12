@@ -54,5 +54,8 @@ public interface JpaScheduleRepository extends JpaRepository<ScheduleModel, UUID
     @Query("SELECT s FROM ScheduleModel s WHERE s.classRoomId = :classRoomId " +
            "ORDER BY s.dayOfWeek ASC, s.startTime ASC")
     List<ScheduleModel> findByClassRoomIdWithDetails(@Param("classRoomId") UUID classRoomId);
+    
+    // Trouver l'emploi du temps d'une année académique
+    List<ScheduleModel> findByAcademicYearIdOrderByDayOfWeekAscStartTimeAsc(UUID academicYearId);
 }
 

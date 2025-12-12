@@ -31,6 +31,9 @@ public class UserModel {
 
     private String phoneNumber;
 
+    @Column(name = "password_changed", nullable = false)
+    private boolean passwordChanged = false;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "user_roles",

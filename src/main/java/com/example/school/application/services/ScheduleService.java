@@ -154,6 +154,15 @@ public class ScheduleService implements ScheduleServiceInterface {
     }
 
     @Override
+    public List<ScheduleDto> getByAcademicYear(UUID academicYearId) {
+        return scheduleRepository.findByAcademicYear(academicYearId)
+                .stream()
+                .map(s -> ScheduleMapper.toDto(s, classRoomRepository, classRoomSubjectRepository,
+                        teacherSubjectRepository, schoolRepository, new TeacherSubjectMapper(), subjectRepository, userSchoolRepository, userRepository))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public ScheduleDto update(UUID id, UpdateScheduleValidator request) {
         Schedule existing = scheduleRepository.findById(id)

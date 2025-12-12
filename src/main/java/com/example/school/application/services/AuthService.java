@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,9 +39,19 @@ public class AuthService implements AuthServiceInterface {
         userDto.setLastName(user.getLastName());
         userDto.setPhoneNumber(user.getPhoneNumber());
         userDto.setEmail(user.getEmail());
+        userDto.setPasswordChanged(user.isPasswordChanged());
         userDto.setRoles(user.getRoles());
         return new AuthResponse(token, userDto);
     }
 
+    @Override
+    public void resetPassword(String email, String newPassword) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Utilisateur non trouvé"));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setPasswordChanged(true); // Marquer que l'utilisateur a changé son mot de passe
+        userRepository.save(user);
+    }
 
 }
