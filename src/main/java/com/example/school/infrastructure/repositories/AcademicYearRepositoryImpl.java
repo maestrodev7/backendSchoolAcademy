@@ -28,8 +28,12 @@ public class AcademicYearRepositoryImpl implements AcademicYearRepositoryInterfa
 
     @Override
     public Optional<AcademicYear> findById(UUID id) {
-        return jpaAcademicYearRepository.findById(id)
+        return jpaAcademicYearRepository.findByIdWithSchools(id)
                 .map(AcademicYearMapper::toDomain);
+    }
+    
+    public boolean existsByAcademicYearIdAndSchoolId(UUID academicYearId, UUID schoolId) {
+        return jpaAcademicYearRepository.existsByAcademicYearIdAndSchoolId(academicYearId, schoolId);
     }
 
     @Override

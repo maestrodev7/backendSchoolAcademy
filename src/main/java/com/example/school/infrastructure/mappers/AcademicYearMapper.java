@@ -12,6 +12,8 @@ public class AcademicYearMapper {
         year.setStartDate(model.getStartDate());
         year.setEndDate(model.getEndDate());
         year.setActive(model.isActive());
+        // Ne pas mapper les écoles pour éviter la récursion infinie
+        // La validation utilise existsByAcademicYearIdAndSchoolId qui fait une requête directe
         return year;
     }
 
