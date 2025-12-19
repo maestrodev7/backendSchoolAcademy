@@ -52,5 +52,12 @@ public class CompetenceRepositoryImpl implements CompetenceRepositoryInterface {
     public void deleteById(UUID id) {
         jpaCompetenceRepository.deleteById(id);
     }
+
+    @Override
+    public Integer getNextOrderNumberForSubject(UUID subjectId) {
+        Integer max = jpaCompetenceRepository.findMaxOrderNumberBySubjectId(subjectId);
+        // Si aucune compétence n'existe encore pour cette matière, on commence à 1
+        return (max == null ? 1 : max + 1);
+    }
 }
 

@@ -34,7 +34,13 @@ public class CompetenceService implements CompetenceServiceInterface {
         Competence competence = new Competence();
         competence.setSubject(subject);
         competence.setDescription(request.getDescription());
-        competence.setOrderNumber(request.getOrderNumber() != null ? request.getOrderNumber() : 1);
+
+        // Si le front ne fournit pas d'ordre, on le génère automatiquement
+        Integer orderNumber = request.getOrderNumber();
+        if (orderNumber == null) {
+            orderNumber = competenceRepository.getNextOrderNumberForSubject(subject.getId());
+        }
+        competence.setOrderNumber(orderNumber);
 
         Competence saved = competenceRepository.save(competence);
         return CompetenceMapper.toDto(saved);
