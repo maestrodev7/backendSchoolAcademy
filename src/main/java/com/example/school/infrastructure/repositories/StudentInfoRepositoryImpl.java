@@ -8,8 +8,10 @@ import com.example.school.infrastructure.repositories.jpa.JpaStudentInfoReposito
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -45,6 +47,19 @@ public class StudentInfoRepositoryImpl implements StudentInfoRepositoryInterface
     public Optional<StudentInfo> findByUniqueIdentifier(String uniqueIdentifier) {
         return jpaStudentInfoRepository.findByUniqueIdentifier(uniqueIdentifier)
                 .map(StudentInfoMapper::toDomain);
+    }
+
+    @Override
+    public long countByYear(String year) {
+        return jpaStudentInfoRepository.countByYear(year);
+    }
+
+    @Override
+    public List<StudentInfo> findByStudentIds(List<UUID> studentIds) {
+        return jpaStudentInfoRepository.findByStudentIds(studentIds)
+                .stream()
+                .map(StudentInfoMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }
 

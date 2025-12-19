@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -35,6 +36,21 @@ public class StudentInfoController {
     public ResponseEntity<ApiResponse<StudentInfoDto>> getStudentInfoByStudentId(@PathVariable UUID studentId) {
         StudentInfoDto dto = studentInfoService.getStudentInfoByStudentId(studentId);
         return ResponseEntity.ok(new ApiResponse<>(200, "Informations récupérées avec succès", dto));
+    }
+
+    @GetMapping("/academic-year/{academicYearId}")
+    public ResponseEntity<ApiResponse<List<StudentInfoDto>>> getStudentInfosByAcademicYear(
+            @PathVariable UUID academicYearId) {
+        List<StudentInfoDto> dtos = studentInfoService.getStudentInfosByAcademicYear(academicYearId);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Informations récupérées avec succès", dtos));
+    }
+
+    @GetMapping("/class/{classRoomId}/academic-year/{academicYearId}")
+    public ResponseEntity<ApiResponse<List<StudentInfoDto>>> getStudentInfosByClassRoomAndAcademicYear(
+            @PathVariable UUID classRoomId,
+            @PathVariable UUID academicYearId) {
+        List<StudentInfoDto> dtos = studentInfoService.getStudentInfosByClassRoomAndAcademicYear(classRoomId, academicYearId);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Informations récupérées avec succès", dtos));
     }
 
     @PutMapping("/{id}")
