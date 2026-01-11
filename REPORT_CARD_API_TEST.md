@@ -50,34 +50,75 @@ GET /api/report-cards/student/abc12345-e67b-89d0-a123-4567890def01/class/456e789
     "termName": "Trimestre 1",
     "sequenceId": null,
     "sequenceName": null,
-    "grades": [
+    "subjectGrades": [
       {
-        "id": "stu78901-e23b-45c6-a789-012345678def",
-        "competenceId": "ghi78901-e23b-45c6-a789-012345678def",
-        "competenceDescription": "Use appropriate language resources to listen, speak, read and write about national integration",
         "subjectId": "789e0123-e45b-67d8-a901-234567890abc",
         "subjectName": "Mathématiques",
-        "studentId": "abc12345-e67b-89d0-a123-4567890def01",
-        "studentName": "Jean DUPONT",
-        "termId": "pqr45678-e90b-12c3-a456-789012345hij",
-        "termName": "Trimestre 1",
-        "sequenceId": null,
-        "sequenceName": null,
-        "noteN20": 15.5,
-        "noteM20": 16.0,
-        "coefficient": 3.0,
-        "mXCoef": 48.0,
+        "subjectCode": "MATH",
+        "subjectCoefficient": 3.0,
+        "teacherName": "Marie MARTIN",
+        "competences": [
+          {
+            "gradeId": "stu78901-e23b-45c6-a789-012345678def",
+            "competenceId": "ghi78901-e23b-45c6-a789-012345678def",
+            "competenceDescription": "Use appropriate language resources to listen, speak, read and write about national integration",
+            "competenceOrderNumber": 1,
+            "noteN20": 15.5,
+            "noteM20": 16.0,
+            "coefficient": 1.0,
+            "mXCoef": 16.0,
+            "cote": 16.0,
+            "minScore": 8.0,
+            "maxScore": 19.5,
+            "appreciation": "Bon travail, continuez ainsi.",
+            "teacherName": "Marie MARTIN"
+          }
+        ],
+        "totalScore": 16.0,
+        "averageScore": 16.0,
+        "totalCoefficient": 1.0,
+        "weightedAverage": 16.0,
         "cote": 16.0,
         "minScore": 8.0,
-        "maxScore": 19.5,
-        "appreciation": "Bon travail, continuez ainsi.",
-        "teacherId": "def45678-e90b-12c3-a456-789012345abc",
-        "teacherName": "Marie MARTIN"
+        "maxScore": 19.5
+      },
+      {
+        "subjectId": "abc78901-e23b-45c6-a789-012345678xyz",
+        "subjectName": "Anglais",
+        "subjectCode": "ENG",
+        "subjectCoefficient": 2.0,
+        "teacherName": "Pierre DUPONT",
+        "competences": [
+          {
+            "gradeId": "xyz78901-e23b-45c6-a789-012345678abc",
+            "competenceId": "def78901-e23b-45c6-a789-012345678def",
+            "competenceDescription": "Use appropriate language resources to listen, speak, read and write about consumption habits",
+            "competenceOrderNumber": 2,
+            "noteN20": 14.5,
+            "noteM20": 15.5,
+            "coefficient": 1.0,
+            "mXCoef": 15.5,
+            "cote": 15.5,
+            "minScore": 7.0,
+            "maxScore": 18.0,
+            "appreciation": "Bien, continuez.",
+            "teacherName": "Pierre DUPONT"
+          }
+        ],
+        "totalScore": 15.5,
+        "averageScore": 15.5,
+        "totalCoefficient": 1.0,
+        "weightedAverage": 15.5,
+        "cote": 15.5,
+        "minScore": 7.0,
+        "maxScore": 18.0
       }
     ],
-    "averageScore": 15.75,
-    "totalCoefficient": 15.0,
-    "totalGrades": 5,
+    "totalGeneral": 79.0,
+    "totalCoefficient": 5.0,
+    "averageTrim": 15.8,
+    "cote": 15.8,
+    "totalGrades": 2,
     "disciplineRecord": {
       "id": "xyz78901-e23b-45c6-a789-012345678abc",
       "studentId": "abc12345-e67b-89d0-a123-4567890def01",
@@ -146,34 +187,44 @@ GET /api/report-cards/student/abc12345-e67b-89d0-a123-4567890def01/class/456e789
     "termName": "Trimestre 1",
     "sequenceId": "vwx78901-e23b-45c6-a789-012345678ghi",
     "sequenceName": "Séquence 1",
-    "grades": [
+    "subjectGrades": [
       {
-        "id": "stu78901-e23b-45c6-a789-012345678def",
-        "competenceId": "ghi78901-e23b-45c6-a789-012345678def",
-        "competenceDescription": "Use appropriate language resources to listen, speak, read and write about national integration",
         "subjectId": "789e0123-e45b-67d8-a901-234567890abc",
         "subjectName": "Mathématiques",
-        "studentId": "abc12345-e67b-89d0-a123-4567890def01",
-        "studentName": "Jean DUPONT",
-        "termId": "pqr45678-e90b-12c3-a456-789012345hij",
-        "termName": "Trimestre 1",
-        "sequenceId": "vwx78901-e23b-45c6-a789-012345678ghi",
-        "sequenceName": "Séquence 1",
-        "noteN20": 15.5,
-        "noteM20": 16.0,
-        "coefficient": 3.0,
-        "mXCoef": 48.0,
+        "subjectCode": "MATH",
+        "subjectCoefficient": 3.0,
+        "teacherName": "Marie MARTIN",
+        "competences": [
+          {
+            "gradeId": "stu78901-e23b-45c6-a789-012345678def",
+            "competenceId": "ghi78901-e23b-45c6-a789-012345678def",
+            "competenceDescription": "Use appropriate language resources to listen, speak, read and write about national integration",
+            "competenceOrderNumber": 1,
+            "noteN20": 15.5,
+            "noteM20": 16.0,
+            "coefficient": 1.0,
+            "mXCoef": 16.0,
+            "cote": 16.0,
+            "minScore": 8.0,
+            "maxScore": 19.5,
+            "appreciation": "Bon travail, continuez ainsi.",
+            "teacherName": "Marie MARTIN"
+          }
+        ],
+        "totalScore": 16.0,
+        "averageScore": 16.0,
+        "totalCoefficient": 1.0,
+        "weightedAverage": 16.0,
         "cote": 16.0,
         "minScore": 8.0,
-        "maxScore": 19.5,
-        "appreciation": "Bon travail, continuez ainsi.",
-        "teacherId": "def45678-e90b-12c3-a456-789012345abc",
-        "teacherName": "Marie MARTIN"
+        "maxScore": 19.5
       }
     ],
-    "averageScore": 15.75,
-    "totalCoefficient": 12.0,
-    "totalGrades": 4,
+    "totalGeneral": 48.0,
+    "totalCoefficient": 3.0,
+    "averageTrim": 16.0,
+    "cote": 16.0,
+    "totalGrades": 1,
     "disciplineRecord": {
       "id": "xyz78901-e23b-45c6-a789-012345678abc",
       "studentId": "abc12345-e67b-89d0-a123-4567890def01",
@@ -217,12 +268,27 @@ GET /api/report-cards/student/abc12345-e67b-89d0-a123-4567890def01/class/456e789
 - Pour un trimestre : `termId`, `termName`, `sequenceId` = null
 - Pour une séquence : `sequenceId`, `sequenceName`, `termId` et `termName` (du trimestre associé)
 
-### Notes
-- Liste complète des notes (GradeDto)
-- Statistiques :
-  - `averageScore` : Moyenne générale pondérée
-  - `totalCoefficient` : Total des coefficients
-  - `totalGrades` : Nombre de notes
+### Notes organisées par matière
+- Liste des matières avec leurs notes (`subjectGrades` : `List<SubjectGradesDto>`)
+- Pour chaque matière (`SubjectGradesDto`) :
+  - Informations de la matière : ID, nom, code, coefficient de la matière pour la classe
+  - Nom de l'enseignant
+  - Liste des compétences avec leurs notes (`competences` : `List<CompetenceGradeDto>`)
+  - Pour chaque compétence : N/20, M/20, Coef, M x coef, COTE, Min-Max, Appréciation
+  - Statistiques de la matière :
+    - `totalScore` : TOTAL (somme des M/20)
+    - `averageScore` : MOYENNE de la matière
+    - `totalCoefficient` : Total des coefficients des compétences
+    - `weightedAverage` : MOYENNE x COEFFICIENT (moyenne pondérée)
+    - `cote` : COTE (note finale de la matière)
+    - `minScore` et `maxScore` : Min et Max de la classe
+
+### Statistiques générales
+- `totalGeneral` : TOTAL GENERAL (Σ(moyenne matière × coef matière))
+- `totalCoefficient` : Total des coefficients de toutes les matières
+- `averageTrim` : MOYENNE TRIM (moyenne générale pondérée)
+- `cote` : COTE (note finale = moyenne générale)
+- `totalGrades` : Nombre total de notes
 
 ### Record disciplinaire
 - Record disciplinaire du trimestre (même pour une séquence)
@@ -240,9 +306,22 @@ GET /api/report-cards/student/abc12345-e67b-89d0-a123-4567890def01/class/456e789
 
 ## NOTES IMPORTANTES
 
-### Calcul de la moyenne
-- La moyenne est calculée selon la formule : **Σ(noteM20 × coefficient) / Σ(coefficient)**
-- Arrondie à 2 décimales (mode HALF_UP)
+### Calcul des moyennes
+
+**Par compétence :**
+- `M x coef` = `noteM20 × coefficient`
+
+**Par matière :**
+- `MOYENNE matière` = `Σ(noteM20) / nombre de compétences` (moyenne simple)
+- `MOYENNE pondérée matière` = `Σ(M x coef) / Σ(coef compétences)` (moyenne pondérée par les coefficients des compétences)
+- `COTE matière` = moyenne pondérée de la matière
+
+**Moyenne générale :**
+- `TOTAL GENERAL` = `Σ(moyenne pondérée matière × coef matière)`
+- `MOYENNE TRIM` = `TOTAL GENERAL / Σ(coef matières)`
+- `COTE` = MOYENNE TRIM
+
+Toutes les moyennes sont arrondies à 2 décimales (mode HALF_UP)
 
 ### Record disciplinaire
 - Pour un trimestre : record disciplinaire du trimestre

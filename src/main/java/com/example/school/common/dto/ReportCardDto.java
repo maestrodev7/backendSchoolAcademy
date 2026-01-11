@@ -42,13 +42,15 @@ public class ReportCardDto {
     private UUID sequenceId;
     private String sequenceName;
     
-    // Notes
-    private List<GradeDto> grades;
+    // Notes organisées par matière
+    private List<SubjectGradesDto> subjectGrades;
     
-    // Statistiques des notes
-    private BigDecimal averageScore; // Moyenne générale
-    private BigDecimal totalCoefficient; // Total des coefficients
-    private Integer totalGrades; // Nombre de notes
+    // Statistiques générales
+    private BigDecimal totalGeneral; // TOTAL GENERAL (somme de tous les M x coef)
+    private BigDecimal totalCoefficient; // Total des coefficients de toutes les matières
+    private BigDecimal averageTrim; // MOYENNE TRIM (moyenne générale pondérée)
+    private BigDecimal cote; // COTE (note finale)
+    private Integer totalGrades; // Nombre total de notes
     
     // Record disciplinaire
     private DisciplineRecordDto disciplineRecord;
