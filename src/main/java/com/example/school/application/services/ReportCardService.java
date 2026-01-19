@@ -26,6 +26,7 @@ import com.example.school.domain.services.ReportCardServiceInterface;
 import com.example.school.domain.services.StudentInfoServiceInterface;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -41,6 +42,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReportCardService implements ReportCardServiceInterface {
 
     private final StudentInfoServiceInterface studentInfoService;
@@ -423,5 +425,87 @@ public class ReportCardService implements ReportCardServiceInterface {
         }
         
         return totalGeneral.divide(totalCoefficient, 2, RoundingMode.HALF_UP);
+    }
+
+    @Override
+    public List<ReportCardDto> generateReportCardsForClassForTerm(UUID classRoomId, UUID academicYearId, UUID termId) {
+        // Récupérer toutes les inscriptions de la classe pour l'année académique
+        List<StudentRegistration> allRegistrations = studentRegistrationRepository.findByClassRoomAndAcademicYear(classRoomId, academicYearId);
+        log.info("Nombre total d'inscriptions trouvées pour la classe {} et année {}: {}", classRoomId, academicYearId, allRegistrations.size());
+        
+        List<StudentRegistration> registrations = allRegistrations.stream()
+                .filter(reg -> reg.isConfirmed()) // Seulement les inscriptions confirmées
+                .collect(Collectors.toList());
+        log.info("Nombre d'inscriptions confirmées: {}", registrations.size());
+
+        // Générer le bulletin pour chaque élève
+        List<ReportCardDto> reportCards = new ArrayList<>();
+        for (StudentRegistration registration : registrations) {
+            UUID studentId = registration.getStudent().getId();
+            String studentName = registration.getStudent().getFirstName() + " " + registration.getStudent().getLastName();
+            try {
+                log.info("Génération du bulletin pour l'élève {} (ID: {})", studentName, studentId);
+                ReportCardDto reportCard = generateReportCardForTerm(
+                        studentId,
+                        classRoomId,
+                        academicYearId,
+                        termId
+                );
+                if (reportCard != null) {
+                    reportCards.add(reportCard);
+                    log.info("Bulletin généré avec succès pour l'élève {}", studentName);
+                } else {
+                    log.warn("Bulletin null retourné pour l'élève {}", studentName);
+                }
+            } catch (Exception e) {
+                // Si la génération échoue pour un élève, on continue avec les autres
+                log.error("Erreur lors de la génération du bulletin pour l'élève {} (ID: {}): {}", 
+                        studentName, studentId, e.getMessage(), e);
+                continue;
+            }
+        }
+        log.info("Nombre total de bulletins générés: {}", reportCards.size());
+        return reportCards;
+    }
+
+    @Override
+    public List<ReportCardDto> generateReportCardsForClassForSequence(UUID classRoomId, UUID academicYearId, UUID sequenceId) {
+        // Récupérer toutes les inscriptions de la classe pour l'année académique
+        List<StudentRegistration> allRegistrations = studentRegistrationRepository.findByClassRoomAndAcademicYear(classRoomId, academicYearId);
+        log.info("Nombre total d'inscriptions trouvées pour la classe {} et année {}: {}", classRoomId, academicYearId, allRegistrations.size());
+        
+        List<StudentRegistration> registrations = allRegistrations.stream()
+                .filter(reg -> reg.isConfirmed()) // Seulement les inscriptions confirmées
+                .collect(Collectors.toList());
+        log.info("Nombre d'inscriptions confirmées: {}", registrations.size());
+
+        // Générer le bulletin pour chaque élève
+        List<ReportCardDto> reportCards = new ArrayList<>();
+        for (StudentRegistration registration : registrations) {
+            UUID studentId = registration.getStudent().getId();
+            String studentName = registration.getStudent().getFirstName() + " " + registration.getStudent().getLastName();
+            try {
+                log.info("Génération du bulletin pour l'élève {} (ID: {})", studentName, studentId);
+                ReportCardDto reportCard = generateReportCardForSequence(
+                        studentId,
+                        classRoomId,
+                        academicYearId,
+                        sequenceId
+                );
+                if (reportCard != null) {
+                    reportCards.add(reportCard);
+                    log.info("Bulletin généré avec succès pour l'élève {}", studentName);
+                } else {
+                    log.warn("Bulletin null retourné pour l'élève {}", studentName);
+                }
+            } catch (Exception e) {
+                // Si la génération échoue pour un élève, on continue avec les autres
+                log.error("Erreur lors de la génération du bulletin pour l'élève {} (ID: {}): {}", 
+                        studentName, studentId, e.getMessage(), e);
+                continue;
+            }
+        }
+        log.info("Nombre total de bulletins générés: {}", reportCards.size());
+        return reportCards;
     }
 }

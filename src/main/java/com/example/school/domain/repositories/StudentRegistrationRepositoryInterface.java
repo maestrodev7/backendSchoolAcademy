@@ -21,6 +21,8 @@ public interface StudentRegistrationRepositoryInterface {
 
     Optional<StudentRegistration> findByStudentAndAcademicYear(UUID studentId, UUID academicYearId);
 
+    List<StudentRegistration> findByClassRoomAndAcademicYear(UUID classRoomId, UUID academicYearId);
+
     void deleteById(UUID id);
 }
 

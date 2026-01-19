@@ -15,4 +15,6 @@ public interface JpaStudentRegistrationRepository extends JpaRepository<StudentR
     List<StudentRegistrationModel> findByStudent_Id(UUID studentId);
 
     java.util.Optional<StudentRegistrationModel> findByStudent_IdAndAcademicYear_Id(UUID studentId, UUID academicYearId);
+
+    List<StudentRegistrationModel> findByClassRoom_IdAndAcademicYear_Id(UUID classRoomId, UUID academicYearId);
 }

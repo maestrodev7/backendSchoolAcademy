@@ -70,6 +70,14 @@ public class StudentRegistrationRepositoryImpl implements StudentRegistrationRep
     }
 
     @Override
+    public List<StudentRegistration> findByClassRoomAndAcademicYear(UUID classRoomId, UUID academicYearId) {
+        return jpaRepository.findByClassRoom_IdAndAcademicYear_Id(classRoomId, academicYearId)
+                .stream()
+                .map(StudentRegistrationMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void deleteById(UUID id) {
         jpaRepository.deleteById(id);
     }

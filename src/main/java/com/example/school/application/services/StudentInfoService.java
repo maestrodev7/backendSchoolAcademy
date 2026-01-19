@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -183,9 +184,14 @@ public class StudentInfoService implements StudentInfoServiceInterface {
 
         // Récupérer les StudentInfo pour ces élèves
         List<StudentInfo> studentInfos = studentInfoRepository.findByStudentIds(studentIds);
-        
+
+        // Trier par nom d'élève (ordre alphabétique) pour un affichage cohérent côté front
         return studentInfos.stream()
                 .map(StudentInfoMapper::toDto)
+                .sorted(Comparator.comparing(
+                        StudentInfoDto::getStudentName,
+                        Comparator.nullsLast(String::compareToIgnoreCase)
+                ))
                 .collect(Collectors.toList());
     }
 
@@ -208,9 +214,14 @@ public class StudentInfoService implements StudentInfoServiceInterface {
 
         // Récupérer les StudentInfo pour ces élèves
         List<StudentInfo> studentInfos = studentInfoRepository.findByStudentIds(studentIds);
-        
+
+        // Trier les élèves par ordre alphabétique (par nom complet)
         return studentInfos.stream()
                 .map(StudentInfoMapper::toDto)
+                .sorted(Comparator.comparing(
+                        StudentInfoDto::getStudentName,
+                        Comparator.nullsLast(String::compareToIgnoreCase)
+                ))
                 .collect(Collectors.toList());
     }
 }

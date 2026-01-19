@@ -3,6 +3,7 @@ package com.example.school.presenation.controllers;
 import com.example.school.common.dto.ApiResponse;
 import com.example.school.common.dto.GradeDto;
 import com.example.school.domain.services.GradeServiceInterface;
+import com.example.school.presenation.validators.ClassGradesBulkRequest;
 import com.example.school.presenation.validators.GradeRequestValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -74,6 +75,19 @@ public class GradeController {
     public ResponseEntity<ApiResponse<Void>> deleteGrade(@PathVariable UUID id) {
         gradeService.deleteGrade(id);
         return ResponseEntity.ok(new ApiResponse<>(200, "Note supprimée avec succès", null));
+    }
+
+    /**
+     * Enregistre ou met à jour en une seule fois les notes
+     * d'une classe pour une compétence donnée (trimestre + séquence optionnelle).
+     */
+    @PostMapping("/class/{classRoomId}/bulk")
+    public ResponseEntity<ApiResponse<Void>> saveClassGrades(
+            @PathVariable UUID classRoomId,
+            @Valid @RequestBody ClassGradesBulkRequest request
+    ) {
+        gradeService.saveOrUpdateClassGrades(classRoomId, request);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Notes de la classe enregistrées avec succès", null));
     }
 }
 

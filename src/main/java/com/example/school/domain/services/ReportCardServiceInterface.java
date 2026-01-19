@@ -2,6 +2,7 @@ package com.example.school.domain.services;
 
 import com.example.school.common.dto.ReportCardDto;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface ReportCardServiceInterface {
@@ -24,4 +25,22 @@ public interface ReportCardServiceInterface {
      * @return Bulletin scolaire complet
      */
     ReportCardDto generateReportCardForSequence(UUID studentId, UUID classRoomId, UUID academicYearId, UUID sequenceId);
+    
+    /**
+     * Génère les bulletins scolaires de tous les élèves d'une classe pour un trimestre
+     * @param classRoomId ID de la classe
+     * @param academicYearId ID de l'année académique
+     * @param termId ID du trimestre
+     * @return Liste des bulletins scolaires
+     */
+    List<ReportCardDto> generateReportCardsForClassForTerm(UUID classRoomId, UUID academicYearId, UUID termId);
+    
+    /**
+     * Génère les bulletins scolaires de tous les élèves d'une classe pour une séquence
+     * @param classRoomId ID de la classe
+     * @param academicYearId ID de l'année académique
+     * @param sequenceId ID de la séquence
+     * @return Liste des bulletins scolaires
+     */
+    List<ReportCardDto> generateReportCardsForClassForSequence(UUID classRoomId, UUID academicYearId, UUID sequenceId);
 }

@@ -14,6 +14,8 @@ import com.example.school.domain.repositories.SequenceRepositoryInterface;
 import com.example.school.domain.repositories.TermRepositoryInterface;
 import com.example.school.domain.repositories.UserRepositoryInterface;
 import com.example.school.domain.services.GradeServiceInterface;
+import com.example.school.presenation.validators.ClassGradeItemRequest;
+import com.example.school.presenation.validators.ClassGradesBulkRequest;
 import com.example.school.presenation.validators.GradeRequestValidator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -192,6 +194,79 @@ public class GradeService implements GradeServiceInterface {
             throw new EntityNotFoundException("Note non trouvée");
         }
         gradeRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void saveOrUpdateClassGrades(UUID classRoomId, ClassGradesBulkRequest request) {
+        // Vérifier trimestre
+        Term term = termRepository.findById(request.getTermId())
+                .orElseThrow(() -> new EntityNotFoundException("Trimestre non trouvé"));
+
+        // Vérifier séquence si fournie
+        Sequence sequence = null;
+        if (request.getSequenceId() != null) {
+            sequence = sequenceRepository.findById(request.getSequenceId())
+                    .orElseThrow(() -> new EntityNotFoundException("Séquence non trouvée"));
+            if (!sequence.getTermId().equals(request.getTermId())) {
+                throw new IllegalArgumentException("La séquence n'appartient pas à ce trimestre");
+            }
+        }
+
+        // Vérifier compétence
+        Competence competence = competenceRepository.findById(request.getCompetenceId())
+                .orElseThrow(() -> new EntityNotFoundException("Compétence non trouvée"));
+
+        // Enseignant optionnel
+        User teacher = null;
+        if (request.getTeacherId() != null) {
+            teacher = userRepository.findById(request.getTeacherId())
+                    .orElseThrow(() -> new EntityNotFoundException("Enseignant non trouvé"));
+        }
+
+        // Upsert pour chaque élève
+        for (ClassGradeItemRequest item : request.getGrades()) {
+            UUID studentId = item.getStudentId();
+
+            // Vérifier élève
+            User student = userRepository.findById(studentId)
+                    .orElseThrow(() -> new EntityNotFoundException("Élève non trouvé"));
+
+            // Chercher une note existante pour (compétence, élève, trimestre)
+            Grade grade = gradeRepository
+                    .findByCompetenceIdAndStudentIdAndTermId(request.getCompetenceId(), studentId, request.getTermId())
+                    .orElseGet(() -> {
+                        Grade g = new Grade();
+                        g.setCompetence(competence);
+                        g.setStudent(student);
+                        g.setTerm(term);
+                        return g;
+                    });
+
+            // Mettre à jour les champs
+            grade.setSequence(sequence);
+            grade.setNoteN20(item.getNoteN20());
+            grade.setNoteM20(item.getNoteM20());
+            grade.setCoefficient(item.getCoefficient());
+
+            // Calculer M x coef si possible
+            if (item.getNoteM20() != null && item.getCoefficient() != null) {
+                grade.setMXCoef(item.getNoteM20().multiply(item.getCoefficient()));
+            } else {
+                grade.setMXCoef(null);
+            }
+
+            grade.setCote(item.getCote());
+            grade.setMinScore(item.getMinScore());
+            grade.setMaxScore(item.getMaxScore());
+            grade.setAppreciation(item.getAppreciation());
+
+            if (teacher != null) {
+                grade.setTeacher(teacher);
+            }
+
+            gradeRepository.save(grade);
+        }
     }
 }
 

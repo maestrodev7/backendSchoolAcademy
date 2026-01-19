@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -53,5 +54,39 @@ public class ReportCardController {
             @PathVariable UUID sequenceId) {
         ReportCardDto reportCard = reportCardService.generateReportCardForSequence(studentId, classRoomId, academicYearId, sequenceId);
         return ResponseEntity.ok(new ApiResponse<>(200, "Bulletin scolaire généré avec succès", reportCard));
+    }
+
+    /**
+     * Génère les bulletins scolaires de tous les élèves d'une classe pour un trimestre
+     * 
+     * @param classRoomId ID de la classe
+     * @param academicYearId ID de l'année académique
+     * @param termId ID du trimestre
+     * @return Liste des bulletins scolaires
+     */
+    @GetMapping("/class/{classRoomId}/academic-year/{academicYearId}/term/{termId}")
+    public ResponseEntity<ApiResponse<List<ReportCardDto>>> getReportCardsForClassForTerm(
+            @PathVariable UUID classRoomId,
+            @PathVariable UUID academicYearId,
+            @PathVariable UUID termId) {
+        List<ReportCardDto> reportCards = reportCardService.generateReportCardsForClassForTerm(classRoomId, academicYearId, termId);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Bulletins scolaires générés avec succès", reportCards));
+    }
+
+    /**
+     * Génère les bulletins scolaires de tous les élèves d'une classe pour une séquence
+     * 
+     * @param classRoomId ID de la classe
+     * @param academicYearId ID de l'année académique
+     * @param sequenceId ID de la séquence
+     * @return Liste des bulletins scolaires
+     */
+    @GetMapping("/class/{classRoomId}/academic-year/{academicYearId}/sequence/{sequenceId}")
+    public ResponseEntity<ApiResponse<List<ReportCardDto>>> getReportCardsForClassForSequence(
+            @PathVariable UUID classRoomId,
+            @PathVariable UUID academicYearId,
+            @PathVariable UUID sequenceId) {
+        List<ReportCardDto> reportCards = reportCardService.generateReportCardsForClassForSequence(classRoomId, academicYearId, sequenceId);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Bulletins scolaires générés avec succès", reportCards));
     }
 }
